@@ -1,6 +1,5 @@
-
 module.exports = {
-    submitToSendgrid: function (db, data, emailSuccess) {
+    submitToFirebase: function (db, data, emailSuccess) {
         var docRef = db.collection('contact').doc(data.email);
 
         var setContact = docRef.set({

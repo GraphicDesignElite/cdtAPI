@@ -80,10 +80,12 @@
                 data: form.serialize(), // serializes the form's elements.
                 success: function (data) {
                     grecaptcha.reset();
+                    console.log('success');
                     reportEmailSuccess();
                     $('#contact-form')[0].reset();
                 },
                 error: function (data) {
+                    console.log(data);
                     if (data.responseJSON.errorCodes) {
                         processServerErrors(data.responseJSON.errorCodes);
                     }
@@ -96,7 +98,15 @@
             var errMsgCnt = $('#errorMsgs');
             var userMessage = '<strong>Server Errors Found:</strong><br/>';
             for (var i = 0; i < errors.length; i++) {
-                userMessage += (i + 1) + ". " + errors[i]['msg'] + '<br/>';
+
+                if (errors[i]['msg']) {
+                    //validation response
+                    userMessage += (i + 1) + ". " + errors[i]['msg'] + '<br/>';
+                }
+                else {
+                    //captcha response
+                    userMessage += (i + 1) + ". " + errors[i].replace(/-/g, " ") + '<br/>';
+                }
             }
             $(errMsgCnt).html(userMessage);
             $(errMsgCnt).show();
