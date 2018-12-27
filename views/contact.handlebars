@@ -27,7 +27,7 @@
             </div>
             <div class="contact">
                 <h3>Email Us</h3>
-                {{msg}}
+                <div id="errorMsgs" style="display:none;"></div>
                 <form method="post" id="contact-form" action="/contact">
                     <p>
                         <label>Name</label>
@@ -80,18 +80,32 @@
                 data: form.serialize(), // serializes the form's elements.
                 success: function (data) {
                     grecaptcha.reset();
+                    reportEmailSuccess();
                     $('#contact-form')[0].reset();
-                    console.log(data); // 
                 },
                 error: function (data) {
-                    console.log(data);
+                    if (data.responseJSON.errorCodes) {
+                        processServerErrors(data.responseJSON.errorCodes);
+                    }
                     grecaptcha.reset();
-                    $('#contact-form')[0].reset();
-
                 }
             });
         }
+        function processServerErrors(errors) {
 
+            var errMsgCnt = $('#errorMsgs');
+            var userMessage = '<strong>Server Errors Found:</strong><br/>';
+            for (var i = 0; i < errors.length; i++) {
+                userMessage += (i + 1) + ". " + errors[i]['msg'] + '<br/>';
+            }
+            $(errMsgCnt).html(userMessage);
+            $(errMsgCnt).show();
+        }
+        function reportEmailSuccess() {
+            var sccMsgCnt = $('#errorMsgs');
+            $(sccMsgCnt).html('<strong>Success!</strong> Your message has been sent');
+            $(sccMsgCnt).show();
+        }
         function validate(event) {
             event.preventDefault();
             if (false) {
