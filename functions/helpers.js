@@ -3,10 +3,13 @@ module.exports = {
         var docRef = db.collection('contact').doc(data.email);
 
         var setContact = docRef.set({
-            name: data.name,
+            firstname: data.firstname,
+            lastname: data.lastname,
             email: data.email,
             phone: data.phone,
             message: data.message,
+            reason: data.reason,
+            contactmethod: data.contactmethod,
             emailSent: emailSuccess
         });
     }

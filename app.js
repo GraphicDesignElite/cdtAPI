@@ -50,10 +50,14 @@ app.use(function (req, res, next) {
 app.post('/contact', [
     // username must be an email
     check('email').isEmail().withMessage('The email address you provided is invalid.'),
-    check('name').trim().isLength({ min: 1 }).withMessage('A name must be provided.')
-        .isAlpha().withMessage('Only text is allowed in the name field'),
+    check('firstname').trim().isLength({ min: 1 }).withMessage('A first name must be provided.')
+        .isAlpha().withMessage('Only text is allowed in the first name field'),
+    check('lastname').trim().isLength({ min: 1 }).withMessage('A last name must be provided.')
+        .isAlpha().withMessage('Only text is allowed in the last name field'),
     check('phone').isLength({ min: 10 }).withMessage('A valid phone number with an area code is required.'),
     check('message').isLength({ max: 255 }).withMessage('Only 255 characters are allowed in your message.'),
+    check('contactmethod').trim().isLength({ min: 1 }).withMessage('You must select a contact method.'),
+    check('reason').trim().isLength({ min: 1 }).withMessage('Please select a reason for contacting us.'),
 
 ], (req, res) => {
     // Validate input
@@ -80,25 +84,34 @@ app.post('/contact', [
         if (result.success === true) { //passes Recaptcha
             console.log('Captcha Pass'); //
 
-            const name = req.body.name.trim();
+            const firstname = req.body.firstname.trim();
+            const lastname = req.body.lastname.trim();
             const email = req.body.email.trim();
             const phone = req.body.phone.trim();
+            const contactmethod = req.body.contactmethod.trim();
+            const reason = req.body.reason.trim();
             const message = req.body.message.trim();
             const data = {
-                name: name,
+                firstname: firstname,
+                lastname: lastname,
                 email: email,
                 phone: phone,
-                message: message
+                message: message,
+                contactmethod:contactmethod,
+                reason:reason
             };
 
             const adminEmail = `
             <h3>Contact Details</h3>
             <p>Contact Message Recieved</p>
             <ul>
-                <li><strong>Visitor Name:</strong> ${data.name}</li>
+                <li><strong>Visitor Name:</strong> ${data.firstname} ${data.lastname}</li>
                 <li><strong>Email Address:</strong> ${data.email}</li>
                 <li><strong>Phone Number:</strong> ${data.phone}</li>
+                <li><strong>Preferred Contact Method:</strong> ${data.contactmethod}</li>
             </ul>
+            <h4>Reason For Contact</h4>
+            <li>${data.reason}</li>
             <h4>Message</h4>
             <p>${data.message}</p>
             `
